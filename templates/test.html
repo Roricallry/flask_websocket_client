@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Client</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+</head>
+<body>
+    <h1>Browser Client</h1>
+    <input type="text" id="messageInput" placeholder="输入消息">
+    <button onclick="sendMessage()">发送到远程</button>
+
+    <h2>来自远程的消息：</h2>
+    <ul id="messages"></ul>
+
+    <script>
+        const socket = io();
+
+        // 接收远程消息
+        socket.on('remote_message', (msg) => {
+            const li = document.createElement('li');
+            li.textContent = msg;
+            document.getElementById('messages').appendChild(li);
+        });
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value;
+            if (message) {
+                socket.emit('browser_message', message);
+                input.value = '';
+            }
+        }
+    </script>
+</body>
+</html>

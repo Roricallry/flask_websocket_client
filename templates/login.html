@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <title>验证码登录</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+  <div class="container d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <div class="card shadow p-4" style="width: 360px;">
+      <h3 class="mb-4 text-center">验证码登录</h3>
+
+      <!-- Flash 消息 -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'danger' else 'success' }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="关闭"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <!-- 表单 -->
+      <form method="POST" action="/login">
+          <label for="email" class="form-label">邮箱</label>
+        <div class="input-group">
+
+          <input type="email" class="form-control" id="email" name="email" value="{{ request.form.get('email', '') }}" required />
+          <input type="hidden" name="action" value="login" />
+            <button class="btn btn-outline-secondary" type="button" onclick="this.form.action='/send-code'; this.form.submit();">
+                发送验证码
+            </button>
+        </div>
+        <div class="mb-3">
+          <label for="code" class="form-label">验证码</label>
+          <div class="mb-3">
+            <input type="text" class="form-control" id="code" name="code" />
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">登录</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- 自动关闭 flash 消息 -->
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const alerts = document.querySelectorAll('.alert');
+      alerts.forEach(alert => {
+        setTimeout(() => {
+          alert.classList.remove('show'); // 开始淡出动画
+        }, 1000);
+        setTimeout(() => {
+          alert.remove(); // 完全移除
+        }, 1500);
+      });
+    });
+  </script>
+</body>
+</html>
